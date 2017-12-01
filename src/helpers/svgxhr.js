@@ -21,15 +21,19 @@ var svgXHR = function(options) {
     _ajax = new XDomainRequest();
   }
 
-  if (typeof baseUrl === 'undefined') {
-    if (typeof window.baseUrl !== 'undefined') {
-      baseUrl = window.baseUrl;
-    } else {
-      baseUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+  if (RegExp('^(?:[a-z]+:)?//', 'i').test(url)) {
+    _fullPath = url;
+  } else {
+    if (typeof baseUrl === 'undefined') {
+      if (typeof window.baseUrl !== 'undefined') {
+        baseUrl = window.baseUrl;
+      } else {
+        baseUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+      }
     }
+    _fullPath = (baseUrl + '/' + url).replace(/([^:]\/)\/+/g, '$1');
   }
 
-  _fullPath = (baseUrl + '/' + url).replace(/([^:]\/)\/+/g, '$1');
   _ajax.open('GET', _fullPath, true);
   _ajax.onprogress = function() {};
   _ajax.onload = function() {
